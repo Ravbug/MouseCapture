@@ -15,7 +15,7 @@
 /* Begin PBXFileReference section */
 		417044F22863F445005E7C81 /* MouseCapture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MouseCapture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		417044F52863F445005E7C81 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		417044F72863F447005E7C81 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		417044F72863F447005E7C81 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		417044FA2863F447005E7C81 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		417044FC2863F447005E7C81 /* MouseCapture.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MouseCapture.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
