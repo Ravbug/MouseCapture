@@ -174,7 +174,7 @@ UINT GetMouseDisplayID() {
     }
 
     // Step 2: Get the monitor handle from the cursor position
-    HMONITOR hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONULL);
+    HMONITOR hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
     if (hMonitor == nullptr) {
         return INVALID_DISP;
     }
@@ -264,7 +264,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     // Create window
     RECT WindowRect = {0, 0, 800, 600};
     AdjustWindowRect(&WindowRect, WS_OVERLAPPEDWINDOW, FALSE);
-    WindowHandle = CreateWindowW(L"ddasample", L"DXGI desktop duplication sample",
+    WindowHandle = CreateWindowW(L"ddasample", L"MouseCapture",
                            WS_OVERLAPPEDWINDOW,
                            0, 0,
                            WindowRect.right - WindowRect.left, WindowRect.bottom - WindowRect.top,
