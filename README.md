@@ -9,4 +9,4 @@ in your videoconferencing app and never manually switch screens again!
 - macOS
     - Open `macOS/MouseCapture.xcodeproj` and build. 
 - Windows
-    - Coming Soon
+    - Open `Windows/MouseCapture.sln` and build.
