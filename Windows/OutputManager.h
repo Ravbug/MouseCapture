@@ -22,7 +22,7 @@ class OUTPUTMANAGER
     public:
         OUTPUTMANAGER();
         ~OUTPUTMANAGER();
-        DUPL_RETURN InitOutput(HWND Window, INT SingleOutput, _Out_ UINT* OutCount, _Out_ RECT* DeskBounds);
+        DUPL_RETURN InitOutput(HWND Window, INT SingleOutput, _Out_ UINT* OutCount, _Out_ RECT* DeskBounds, bool setSize);
         DUPL_RETURN UpdateApplicationWindow(_In_ PTR_INFO* PointerInfo, _Inout_ bool* Occluded);
         void CleanRefs();
         HANDLE GetSharedHandle();

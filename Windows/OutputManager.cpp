@@ -48,7 +48,7 @@ void OUTPUTMANAGER::WindowResize()
 //
 // Initialize all state
 //
-DUPL_RETURN OUTPUTMANAGER::InitOutput(HWND Window, INT SingleOutput, _Out_ UINT* OutCount, _Out_ RECT* DeskBounds)
+DUPL_RETURN OUTPUTMANAGER::InitOutput(HWND Window, INT SingleOutput, _Out_ UINT* OutCount, _Out_ RECT* DeskBounds, bool setSize)
 {
     HRESULT hr;
 
@@ -213,7 +213,15 @@ DUPL_RETURN OUTPUTMANAGER::InitOutput(HWND Window, INT SingleOutput, _Out_ UINT*
     }
 
     GetWindowRect(m_WindowHandle, &WindowRect);
-    MoveWindow(m_WindowHandle, WindowRect.left, WindowRect.top, (DeskBounds->right - DeskBounds->left) / 2, (DeskBounds->bottom - DeskBounds->top) / 2, TRUE);
+    int nWidth = WindowRect.right - WindowRect.left;
+    int nHeight = WindowRect.bottom - WindowRect.top;
+
+    if (setSize) {
+        nWidth = (DeskBounds->right - DeskBounds->left) / 2;
+        nHeight = (DeskBounds->bottom - DeskBounds->top) / 2;
+    }
+
+    MoveWindow(m_WindowHandle, WindowRect.left, WindowRect.top, nWidth, nHeight, TRUE);
 
     return Return;
 }

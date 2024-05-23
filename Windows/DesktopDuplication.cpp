@@ -323,6 +323,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         }
         else if (FirstTime || displayChanged || WaitForSingleObjectEx(ExpectedErrorEvent, 0, FALSE) == WAIT_OBJECT_0)
         {
+            bool shouldSetSize = false;
             if (!FirstTime)
             {
                 // Terminate other threads
@@ -343,10 +344,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
             {
                 // First time through the loop so nothing to clean up
                 FirstTime = false;
+                shouldSetSize = true;
             }
 
             // Re-initialize
-            Ret = OutMgr.InitOutput(WindowHandle, mouseDisplayID, &OutputCount, &DeskBounds);
+            Ret = OutMgr.InitOutput(WindowHandle, mouseDisplayID, &OutputCount, &DeskBounds, shouldSetSize);
             if (Ret == DUPL_RETURN_SUCCESS)
             {
                 HANDLE SharedHandle = OutMgr.GetSharedHandle();
