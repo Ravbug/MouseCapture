@@ -53,7 +53,7 @@ DUPLICATIONMANAGER::~DUPLICATIONMANAGER()
 //
 // Initialize duplication interfaces
 //
-DUPL_RETURN DUPLICATIONMANAGER::InitDupl(_In_ ID3D11Device* Device, UINT Output)
+DUPL_RETURN DUPLICATIONMANAGER::InitDupl(_In_ ID3D11Device* Device, HMONITOR Output)
 {
     m_OutputNumber = Output;
 
@@ -80,8 +80,20 @@ DUPL_RETURN DUPLICATIONMANAGER::InitDupl(_In_ ID3D11Device* Device, UINT Output)
     }
 
     // Get output
+
+    UINT i = 0;
     IDXGIOutput* DxgiOutput = nullptr;
-    hr = DxgiAdapter->EnumOutputs(Output, &DxgiOutput);
+    while (DxgiAdapter->EnumOutputs(i, &DxgiOutput) != DXGI_ERROR_NOT_FOUND)
+    {
+        DXGI_OUTPUT_DESC outDesc;
+        DxgiOutput->GetDesc(&outDesc);
+        if (outDesc.Monitor == Output) {
+            break;
+        }
+        ++i;
+    }
+
+    hr = DxgiAdapter->EnumOutputs(i, &DxgiOutput);
     DxgiAdapter->Release();
     DxgiAdapter = nullptr;
     if (FAILED(hr))

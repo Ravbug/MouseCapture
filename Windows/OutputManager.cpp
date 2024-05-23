@@ -48,7 +48,7 @@ void OUTPUTMANAGER::WindowResize()
 //
 // Initialize all state
 //
-DUPL_RETURN OUTPUTMANAGER::InitOutput(HWND Window, INT SingleOutput, _Out_ UINT* OutCount, _Out_ RECT* DeskBounds, bool setSize)
+DUPL_RETURN OUTPUTMANAGER::InitOutput(HWND Window, HMONITOR targetMonitor, _Out_ UINT* OutCount, _Out_ RECT* DeskBounds, bool setSize)
 {
     HRESULT hr;
 
@@ -155,7 +155,7 @@ DUPL_RETURN OUTPUTMANAGER::InitOutput(HWND Window, INT SingleOutput, _Out_ UINT*
     }
 
     // Create shared texture
-    DUPL_RETURN Return = CreateSharedSurf(SingleOutput, OutCount, DeskBounds);
+    DUPL_RETURN Return = CreateSharedSurf(targetMonitor, OutCount, DeskBounds);
     if (Return != DUPL_RETURN_SUCCESS)
     {
         return Return;
@@ -229,7 +229,7 @@ DUPL_RETURN OUTPUTMANAGER::InitOutput(HWND Window, INT SingleOutput, _Out_ UINT*
 //
 // Recreate shared texture
 //
-DUPL_RETURN OUTPUTMANAGER::CreateSharedSurf(INT SingleOutput, _Out_ UINT* OutCount, _Out_ RECT* DeskBounds)
+DUPL_RETURN OUTPUTMANAGER::CreateSharedSurf(HMONITOR targetMonitor, _Out_ UINT* OutCount, _Out_ RECT* DeskBounds)
 {
     HRESULT hr;
 
@@ -260,49 +260,34 @@ DUPL_RETURN OUTPUTMANAGER::CreateSharedSurf(INT SingleOutput, _Out_ UINT* OutCou
 
     // Figure out right dimensions for full size desktop texture and # of outputs to duplicate
     UINT OutputCount;
-    if (SingleOutput < 0)
+
+    UINT i = 0;
+    while (DxgiAdapter->EnumOutputs(i, &DxgiOutput) != DXGI_ERROR_NOT_FOUND)
     {
-        hr = S_OK;
-        for (OutputCount = 0; SUCCEEDED(hr); ++OutputCount)
-        {
-            if (DxgiOutput)
-            {
-                DxgiOutput->Release();
-                DxgiOutput = nullptr;
-            }
-            hr = DxgiAdapter->EnumOutputs(OutputCount, &DxgiOutput);
-            if (DxgiOutput && (hr != DXGI_ERROR_NOT_FOUND))
-            {
-                DXGI_OUTPUT_DESC DesktopDesc;
-                DxgiOutput->GetDesc(&DesktopDesc);
-
-                DeskBounds->left = min(DesktopDesc.DesktopCoordinates.left, DeskBounds->left);
-                DeskBounds->top = min(DesktopDesc.DesktopCoordinates.top, DeskBounds->top);
-                DeskBounds->right = max(DesktopDesc.DesktopCoordinates.right, DeskBounds->right);
-                DeskBounds->bottom = max(DesktopDesc.DesktopCoordinates.bottom, DeskBounds->bottom);
-            }
+        DXGI_OUTPUT_DESC outDesc;
+        DxgiOutput->GetDesc(&outDesc);
+        if (outDesc.Monitor == targetMonitor) {
+            break;
         }
-
-        --OutputCount;
+        ++i;
     }
-    else
+   
+    hr = DxgiAdapter->EnumOutputs(i, &DxgiOutput);
+    if (FAILED(hr))
     {
-        hr = DxgiAdapter->EnumOutputs(SingleOutput, &DxgiOutput);
-        if (FAILED(hr))
-        {
-            DxgiAdapter->Release();
-            DxgiAdapter = nullptr;
-            return ProcessFailure(m_Device, L"Output specified to be duplicated does not exist", L"Error", hr);
-        }
-        DXGI_OUTPUT_DESC DesktopDesc;
-        DxgiOutput->GetDesc(&DesktopDesc);
-        *DeskBounds = DesktopDesc.DesktopCoordinates;
-
-        DxgiOutput->Release();
-        DxgiOutput = nullptr;
-
-        OutputCount = 1;
+        DxgiAdapter->Release();
+        DxgiAdapter = nullptr;
+        return ProcessFailure(m_Device, L"Output specified to be duplicated does not exist", L"Error", hr);
     }
+    DXGI_OUTPUT_DESC DesktopDesc;
+    DxgiOutput->GetDesc(&DesktopDesc);
+    *DeskBounds = DesktopDesc.DesktopCoordinates;
+
+    DxgiOutput->Release();
+    DxgiOutput = nullptr;
+
+    OutputCount = 1;
+   
 
     DxgiAdapter->Release();
     DxgiAdapter = nullptr;

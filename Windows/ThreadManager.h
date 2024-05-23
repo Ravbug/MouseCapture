@@ -16,7 +16,7 @@ class THREADMANAGER
         THREADMANAGER();
         ~THREADMANAGER();
         void Clean();
-        DUPL_RETURN Initialize(INT SingleOutput, UINT OutputCount, HANDLE UnexpectedErrorEvent, HANDLE ExpectedErrorEvent, HANDLE TerminateThreadsEvent, HANDLE SharedHandle, _In_ RECT* DesktopDim);
+        DUPL_RETURN Initialize(HMONITOR SingleOutput, UINT OutputCount, HANDLE UnexpectedErrorEvent, HANDLE ExpectedErrorEvent, HANDLE TerminateThreadsEvent, HANDLE SharedHandle, _In_ RECT* DesktopDim);
         PTR_INFO* GetPointerInfo();
         void WaitForThreadTermination();
 

@@ -164,23 +164,20 @@ int GetMonitorIndex(HMONITOR hMonitor)
     return info.iIndex;
 }
 
-constexpr static UINT INVALID_DISP = std::numeric_limits<decltype(INVALID_DISP)>::max();
 
-
-UINT GetMouseDisplayID() {
+HMONITOR GetMouseDisplay() {
     POINT pt;
     if (!GetCursorPos(&pt)) {
-        return INVALID_DISP;
+        return NULL;
     }
 
     // Step 2: Get the monitor handle from the cursor position
     HMONITOR hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
     if (hMonitor == nullptr) {
-        return INVALID_DISP;
+        return NULL;
     }
 
-    auto idx = GetMonitorIndex(hMonitor);
-    return idx;
+    return hMonitor;
 }
 
 //
@@ -290,15 +287,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     bool Occluded = true;
     DYNAMIC_WAIT DynamicWait;
 
-    UINT mouseDisplayID = 0;
+    HMONITOR mouseDisplay = NULL;
 
     while (WM_QUIT != msg.message)
     {
         DUPL_RETURN Ret = DUPL_RETURN_SUCCESS;
-        auto newID = GetMouseDisplayID();
+        auto newMonitor = GetMouseDisplay();
         bool displayChanged = false;
-        if (newID != mouseDisplayID && newID != INVALID_DISP) {
-            mouseDisplayID = newID;
+        if (newMonitor != mouseDisplay && newMonitor != NULL) {
+            mouseDisplay = newMonitor;
             displayChanged = true;
         }
 
@@ -348,13 +345,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
             }
 
             // Re-initialize
-            Ret = OutMgr.InitOutput(WindowHandle, mouseDisplayID, &OutputCount, &DeskBounds, shouldSetSize);
+            Ret = OutMgr.InitOutput(WindowHandle, mouseDisplay, &OutputCount, &DeskBounds, shouldSetSize);
             if (Ret == DUPL_RETURN_SUCCESS)
             {
                 HANDLE SharedHandle = OutMgr.GetSharedHandle();
                 if (SharedHandle)
                 {
-                    Ret = ThreadMgr.Initialize(mouseDisplayID, OutputCount, UnexpectedErrorEvent, ExpectedErrorEvent, TerminateThreadsEvent, SharedHandle, &DeskBounds);
+                    Ret = ThreadMgr.Initialize(mouseDisplay, OutputCount, UnexpectedErrorEvent, ExpectedErrorEvent, TerminateThreadsEvent, SharedHandle, &DeskBounds);
                 }
                 else
                 {

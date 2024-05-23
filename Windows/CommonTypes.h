@@ -52,7 +52,7 @@ typedef struct _PTR_INFO
     POINT Position;
     bool Visible;
     UINT BufferSize;
-    UINT WhoUpdatedPositionLast;
+    HMONITOR WhoUpdatedPositionLast;
     LARGE_INTEGER LastTimeStamp;
 } PTR_INFO;
 
@@ -84,7 +84,7 @@ typedef struct _THREAD_DATA
     HANDLE TerminateThreadsEvent;
 
     HANDLE TexSharedHandle;
-    UINT Output;
+    HMONITOR Output;
     INT OffsetX;
     INT OffsetY;
     PTR_INFO* PtrInfo;
