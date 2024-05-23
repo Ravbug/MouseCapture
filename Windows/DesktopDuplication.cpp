@@ -471,6 +471,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             OutMgr.WindowResize();
             break;
         }
+        // draggable by clicking in client area
+        // https://stackoverflow.com/questions/7773771/how-do-i-implement-dragging-a-window-using-its-client-area
+        case WM_NCHITTEST: {
+            LRESULT hit = DefWindowProc(hWnd, message, wParam, lParam);
+            if (hit == HTCLIENT) hit = HTCAPTION;
+            return hit;
+        }
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
     }
